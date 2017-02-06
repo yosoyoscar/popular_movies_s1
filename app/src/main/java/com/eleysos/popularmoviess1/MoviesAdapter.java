@@ -5,15 +5,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Created by Óscar on 01/02/2017.
- */
+import com.eleysos.popularmoviess1.utilities.Movie;
+import com.squareup.picasso.Picasso;
+
+import static com.eleysos.popularmoviess1.utilities.NetworkUtils.POSTERS_URL;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder> {
 
-    private String[] mMoviesData;
+    private Movie[] mMoviesData;
 
     /*
     * An on-click handler that we've defined to make it easy for an Activity to interface with
@@ -25,7 +27,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     * The interface that receives onClick messages.
     */
     public interface MoviesAdapterOnClickHandler {
-        void onClick(String selectedMovie);
+        void onClick(Movie selectedMovie);
     }
 
     /**
@@ -42,11 +44,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
      * Cache of the children views for a forecast list item.
      */
     public class MoviesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mMovieTextView;
+        public final ImageView mMoviePoster;
+        public final TextView mMovieVoteAverage;
+        public final Context context;
 
         public MoviesAdapterViewHolder(View view) {
             super(view);
-            mMovieTextView = (TextView) view.findViewById(R.id.tv_movie_data);
+            mMoviePoster = (ImageView) view.findViewById(R.id.tv_movie_poster);
+            mMovieVoteAverage = (TextView) view.findViewById(R.id.tv_movie_vote_average);
+            context = view.getContext();
             view.setOnClickListener(this);
         }
 
@@ -58,7 +64,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String selectedMovie = mMoviesData[adapterPosition];
+            Movie selectedMovie = mMoviesData[adapterPosition];
             mClickHandler.onClick(selectedMovie);
         }
     }
@@ -97,8 +103,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
      */
     @Override
     public void onBindViewHolder(MoviesAdapter.MoviesAdapterViewHolder moviesAdapterViewHolder, int position) {
-        String selectedMovie = mMoviesData[position];
-        moviesAdapterViewHolder.mMovieTextView.setText(selectedMovie);
+        Movie selectedMovie = mMoviesData[position];
+        moviesAdapterViewHolder.mMovieVoteAverage.setText(String.valueOf(selectedMovie.getVote_average()));
+        String imageUrl = POSTERS_URL + selectedMovie.getPosterPath();
+        Picasso.with(moviesAdapterViewHolder.context).load(imageUrl).into(moviesAdapterViewHolder.mMoviePoster);
     }
 
     /**
@@ -120,7 +128,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
      *
      * @param moviesData The new movies data to be displayed.
      */
-    public void setMoviesData(String[] moviesData) {
+    public void setMoviesData(Movie[] moviesData) {
         mMoviesData = moviesData;
         notifyDataSetChanged();
     }

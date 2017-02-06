@@ -20,7 +20,7 @@ This app will:
 		release date
 
 
-API KEY:
+THEMOVIEDB API KEY: this app needs a https://www.themoviedb.org/ api key, please make sure to write yours in:
 
  com.eleysos.popularmoviess1.utilities.NetworkUtils.java
  

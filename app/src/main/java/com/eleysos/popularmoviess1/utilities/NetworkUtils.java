@@ -17,7 +17,9 @@ public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
+    private static final String POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
+    private static final String TOP_RATED_MOVIES_URL = "https://api.themoviedb.org/3/movie/top_rated";
+    public static final String POSTERS_URL = "http://image.tmdb.org/t/p/w185";
 
     /* The format we want our API to return */
     private static final String format = "json";
@@ -36,10 +38,12 @@ public final class NetworkUtils {
      * @return The URL to use to query the weather server.
      */
     public static URL buildUrl(String order) {
-        Uri builtUri = Uri.parse(MOVIES_URL).buildUpon()
+        String orderedUrl = POPULAR_MOVIES_URL;
+        if (order.equals("top_rated")){
+            orderedUrl = TOP_RATED_MOVIES_URL;
+        }
+        Uri builtUri = Uri.parse(orderedUrl).buildUpon()
                 .appendQueryParameter(APIKEY_PARAM, apiKey)
-                // TODO: set order param
-                //.appendQueryParameter(ORDER_PARAM, order)
                 .build();
 
         URL url = null;
